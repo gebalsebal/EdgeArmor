@@ -41,3 +41,6 @@ venv/
 *.class
 target/
 
+# model Params
+ViT-L-14.pt
+ckpt_best.pth

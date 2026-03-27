@@ -123,6 +123,26 @@ def main():
         alpha = 0.5
         overlay = cv2.addWeighted(img_bgr, alpha, heatmap_colored, 1 - alpha, 0)
         
+        # Add probability text
+        if 'prob' in pred_dict:
+            prob = pred_dict['prob'].item() * 100
+            text = f"Fake: {prob:.2f}%"
+            
+            # Dynamic font scale based on image width
+            font_scale = max(0.5, img_w / 400.0)
+            thickness_bg = max(2, int(font_scale * 4))
+            thickness_fg = max(1, int(font_scale * 2))
+            pos = (10, int(30 * font_scale))
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            
+            # Draw on overlay image
+            cv2.putText(overlay, text, pos, font, font_scale, (0, 0, 0), thickness_bg, cv2.LINE_AA)
+            cv2.putText(overlay, text, pos, font, font_scale, (0, 255, 0), thickness_fg, cv2.LINE_AA)
+            
+            # Draw on original image
+            cv2.putText(img_bgr, text, pos, font, font_scale, (0, 0, 0), thickness_bg, cv2.LINE_AA)
+            cv2.putText(img_bgr, text, pos, font, font_scale, (0, 255, 0), thickness_fg, cv2.LINE_AA)
+        
         # Construct save paths
         base_name = os.path.basename(img_path)
         name, ext = os.path.splitext(base_name)
